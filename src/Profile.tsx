@@ -31,7 +31,7 @@ function Profile() {
 
   const firstName = currentUser?.firstName || 'John';
   const lastName = currentUser?.lastName || 'Davis';
-  const email = currentUser?.email || 'user@lionsedge.com';
+  const email = currentUser?.email || 'user@campuscup.com';
 
   return (
     <div className="min-h-screen flex flex-col overflow-x-hidden">

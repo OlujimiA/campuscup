@@ -72,7 +72,7 @@ function Login({ onLogin }: LoginProps) {
               <label className="block text-[#1a061e] text-sm font-semibold mb-2">Email / Username</label>
               <div className="relative">
                 <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i className="far fa-user text-sm"></i></span>
-                <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} className="input-field w-full pl-10 pr-4 py-3 rounded-lg focus:outline-none" placeholder="user@lionsedge.com" required />
+                <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} className="input-field w-full pl-10 pr-4 py-3 rounded-lg focus:outline-none" placeholder="user@campuscup.com" required />
               </div>
             </div>
             <div>
@@ -89,7 +89,7 @@ function Login({ onLogin }: LoginProps) {
           </div>
         </div>
       </main>
-      <footer className="text-center p-4 text-gray-400 text-xs">© 2026 Lionsedge Stadium. All rights reserved.</footer>
+      <footer className="text-center p-4 text-gray-400 text-xs">© 2026 Campus Cup. All rights reserved.</footer>
     </div>
   );
 }
