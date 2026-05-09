@@ -1,31 +1,36 @@
-//my front end
-import { useState } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import Login from './Login';
+import Signup from './Signup';
 import Dashboard from './Dashboard';
-import LiveMatch from './LiveMatch';
-import StandingsPage from './StandingsPage';
-import TeamsPage from './TeamsPage';
-import ProfilePage from './ProfilesPage';
+import Teams from './Teams';
+import Standings from './Standings';
+import Profile from './Profile';
+import Admin from './Admin';
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
-  if (!isAuthenticated) {
-    return <Login onLogin={() => setIsAuthenticated(true)} />;
-  }
+  useEffect(() => {
+    const user = localStorage.getItem('currentUser');
+    setIsAuthenticated(!!user);
+  }, []);
+
+  const handleLogin = () => {
+    setIsAuthenticated(true);
+  };
 
   return (
     <BrowserRouter>
-      <div style={{ minHeight: '100vh'}}>
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/match/:id" element={<LiveMatch />} />
-          <Route path="/standings" element={<StandingsPage />} />
-          <Route path="/teams" element={<TeamsPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
-        </Routes>
-      </div>
+      <Routes>
+        <Route path="/login" element={<Login onLogin={handleLogin} />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/" element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />} />
+        <Route path="/teams" element={isAuthenticated ? <Teams /> : <Navigate to="/login" />} />
+        <Route path="/standings" element={isAuthenticated ? <Standings /> : <Navigate to="/login" />} />
+        <Route path="/profile" element={isAuthenticated ? <Profile /> : <Navigate to="/login" />} />
+        <Route path="/admin" element={isAuthenticated ? <Admin /> : <Navigate to="/login" />} />
+      </Routes>
     </BrowserRouter>
   );
 }
