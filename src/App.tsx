@@ -1,46 +1,24 @@
-import { useEffect, useState } from "react";
-import type { Schema } from "../amplify/data/resource";
-import { generateClient } from "aws-amplify/data";
-import { useAuthenticator } from '@aws-amplify/ui-react';
-
-const client = generateClient<Schema>();
+//my front end
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Dashboard from './Dashboard';
+import LiveMatch from './LiveMatch';
+import StandingsPage from './StandingsPage';
+import TeamsPage from './TeamsPage';
+import ProfilePage from './ProfilesPage';
 
 function App() {
-  const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
-  const { user, signOut } = useAuthenticator();
-
-  useEffect(() => {
-    client.models.Todo.observeQuery().subscribe({
-      next: (data) => setTodos([...data.items]),
-    });
-  }, []);
-
-  function createTodo() {
-    client.models.Todo.create({ content: window.prompt("Todo content") });
-  }
-
-  function deleteTodo(id: string){
-    client.models.Todo.delete({ id });
-  }
-
   return (
-    <main>
-      <h1>{user?.signInDetails?.loginId}'s todos</h1>
-      <button onClick={createTodo}>+ new</button>
-      <ul>
-        {todos.map((todo) => (
-          <li onClick={() => deleteTodo(todo.id)} key={todo.id}>{todo.content}</li>
-        ))}
-      </ul>
-      <button onClick={signOut}>Sign out</button>
-      <div>
-        🥳 App successfully hosted. Try creating a new todo.
-        <br />
-        <a href="https://docs.amplify.aws/react/start/quickstart/#make-frontend-updates">
-          Review next step of this tutorial.
-        </a>
+    <BrowserRouter>
+      <div style={{ minHeight: '100vh'}}>
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/match/:id" element={<LiveMatch />} />
+          <Route path="/standings" element={<StandingsPage />} />
+          <Route path="/teams" element={<TeamsPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+        </Routes>
       </div>
-    </main>
+    </BrowserRouter>
   );
 }
 
