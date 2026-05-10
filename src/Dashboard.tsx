@@ -1,76 +1,140 @@
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { generateClient } from "aws-amplify/data";
+import type { Schema } from "../amplify/data/resource";
 
-interface Fixture {
-  id: number;
-  home: string;
-  away: string;
-  date: string;
-  time: string;
-  venue: string;
-}
+const client = generateClient<Schema>();
 
-interface Standing {
+type Team = {
+  id: string;
   name: string;
-  points: number;
-  gf: number;
-  ga: number;
-}
+  logoUrl?: string | null;
+};
+
+type Match = {
+  id: string;
+  homeTeamId: string;
+  awayTeamId: string;
+  scheduledDate: string;
+  venue?: string | null;
+  state?: string | null;
+  scoreHome?: number | null;
+  scoreAway?: number | null;
+};
 
 function Dashboard() {
-  const fixtures: Fixture[] = [
-    { id: 1, home: 'Lions', away: 'Eagles', date: 'SAT, OCT 14', time: '4:00 PM', venue: 'Main Field' },
-    { id: 2, home: 'Software 200L', away: 'Cyber 200L', date: 'WED, OCT 18', time: '3:00 PM', venue: 'Court 2' }
-  ];
+  const [matches, setMatches] = useState<Match[]>([]);
+  const [teams, setTeams] = useState<Team[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const standings: Standing[] = [
-    { name: 'Software 200L', points: 24, gf: 58, ga: 24 },
-    { name: 'Cyber 100L', points: 22, gf: 45, ga: 23 },
-    { name: 'Cyber 200L', points: 21, gf: 44, ga: 25 },
-    { name: 'Mechatronics 300L', points: 20, gf: 38, ga: 22 }
-  ];
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  async function fetchData() {
+    setLoading(true);
+
+    const [teamsRes, matchesRes] = await Promise.all([
+      client.models.Team.list(),
+      client.models.Match.list(),
+    ]);
+
+    setTeams(teamsRes.data || []);
+    setMatches(matchesRes.data || []);
+
+    setLoading(false);
+  }
+
+  function getTeam(teamId: string) {
+    return teams.find((t) => t.id === teamId);
+  }
+
+  const liveMatch = matches.find(
+    (m) => m.state === "live" || m.state === "halftime"
+  );
+
+  const upcomingMatches = matches
+    .filter((m) => m.state === "scheduled")
+    .sort(
+      (a, b) =>
+        new Date(a.scheduledDate).getTime() -
+        new Date(b.scheduledDate).getTime()
+    )
+    .slice(0, 5);
+
+  if (loading) {
+    return <div className="p-8 text-center">Loading dashboard...</div>;
+  }
 
   return (
     <div className="dashboard-container">
-      <h1>Welcome Back, Mohammed</h1>
-      <p className="subtitle">Here's your matchday overview.</p>
 
-      <div className="standings-card">
-        <h3>League Standings</h3>
-        <table className="standings-table">
-          <thead>
-            <tr><th>Team</th><th>PTS</th><th>GF</th><th>GA</th></tr>
-          </thead>
-          <tbody>
-            {standings.map(team => (
-              <tr key={team.name}>
-                <td>{team.name}</td>
-                <td className="pts">{team.points}</td>
-                <td>{team.gf}</td>
-                <td>{team.ga}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <Link to="/standings" className="full-table-link">Full Table →</Link>
-      </div>
+      {/* LIVE MATCH */}
+      {liveMatch && (
+        <section className="score-card w-full p-6 md:p-12 mb-8 relative">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
 
+            <div className="text-center">
+              <h2 className="text-lg font-extrabold">
+                {getTeam(liveMatch.homeTeamId)?.name ?? "Home"}
+              </h2>
+            </div>
+
+            <div className="text-6xl font-black flex items-center space-x-4">
+              <span>{liveMatch.scoreHome ?? 0}</span>
+              <span className="text-gray-300">-</span>
+              <span>{liveMatch.scoreAway ?? 0}</span>
+            </div>
+
+            <div className="text-center">
+              <h2 className="text-lg font-extrabold">
+                {getTeam(liveMatch.awayTeamId)?.name ?? "Away"}
+              </h2>
+            </div>
+
+          </div>
+
+          <div className="text-center mt-6">
+            <Link
+              to={`/match/${liveMatch.id}`}
+              className="inline-block bg-pink-500 text-white px-6 py-2 rounded-full text-sm font-bold"
+            >
+              View Match Feed
+            </Link>
+          </div>
+        </section>
+      )}
+
+      {/* UPCOMING MATCHES */}
       <div className="fixtures-section">
         <h3>Upcoming Fixtures</h3>
-        {fixtures.map(fixture => (
-          <Link key={fixture.id} to={`/match/${fixture.id}`} className="fixture-card">
-            <div className="fixture-title">{fixture.home} vs {fixture.away}</div>
-            <div className="fixture-datetime">{fixture.date} at {fixture.time}, {fixture.venue}</div>
-          </Link>
-        ))}
-      </div>
 
-      <div className="bottom-nav">
-        <Link to="/">Home</Link>
-        <Link to="/teams">Teams</Link>
-        <Link to="/standings">Standings</Link>
-        <Link to="/profile">Profile</Link>
+        {upcomingMatches.map((match) => {
+          const home = getTeam(match.homeTeamId);
+          const away = getTeam(match.awayTeamId);
+
+          return (
+            <Link
+              key={match.id}
+              to={`/match/${match.id}`}
+              className="fixture-card"
+            >
+              <div className="fixture-title">
+                {home?.name ?? "Home"} vs {away?.name ?? "Away"}
+              </div>
+
+              <div className="fixture-datetime">
+                {new Date(match.scheduledDate).toLocaleDateString()} at{" "}
+                {new Date(match.scheduledDate).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+                {match.venue ? `, ${match.venue}` : ""}
+              </div>
+            </Link>
+          );
+        })}
       </div>
-      <div className="nav-spacer"></div>
     </div>
   );
 }
