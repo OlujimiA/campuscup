@@ -1,5 +1,7 @@
+import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { supabase } from './supabaseClient';
+import { Session } from '@supabase/supabase-js';
 import Login from './Login';
 import Signup from './Signup';
 import Dashboard from './Dashboard';
@@ -9,27 +11,34 @@ import Profile from './Profile';
 import Admin from './Admin';
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [session, setSession] = useState<Session | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const user = localStorage.getItem('currentUser');
-    setIsAuthenticated(!!user);
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setLoading(false);
+    });
+
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => listener?.subscription.unsubscribe();
   }, []);
 
-  const handleLogin = () => {
-    setIsAuthenticated(true);
-  };
+  if (loading) return <div className="flex items-center justify-center h-screen">Loading...</div>;
 
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<Login onLogin={handleLogin} />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/" element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />} />
-        <Route path="/teams" element={isAuthenticated ? <Teams /> : <Navigate to="/login" />} />
-        <Route path="/standings" element={isAuthenticated ? <Standings /> : <Navigate to="/login" />} />
-        <Route path="/profile" element={isAuthenticated ? <Profile /> : <Navigate to="/login" />} />
-        <Route path="/admin" element={isAuthenticated ? <Admin /> : <Navigate to="/login" />} />
+        <Route path="/login" element={!session ? <Login /> : <Navigate to="/" />} />
+        <Route path="/signup" element={!session ? <Signup /> : <Navigate to="/" />} />
+        <Route path="/" element={session ? <Dashboard /> : <Navigate to="/login" />} />
+        <Route path="/teams" element={session ? <Teams /> : <Navigate to="/login" />} />
+        <Route path="/standings" element={session ? <Standings /> : <Navigate to="/login" />} />
+        <Route path="/profile" element={session ? <Profile /> : <Navigate to="/login" />} />
+        <Route path="/admin" element={session ? <Admin /> : <Navigate to="/login" />} />
       </Routes>
     </BrowserRouter>
   );
