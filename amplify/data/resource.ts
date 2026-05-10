@@ -7,11 +7,33 @@ specifies that any user authenticated via an API key can "create", "read",
 "update", and "delete" any "Todo" records.
 =========================================================================*/
 const schema = a.schema({
-  Todo: a
+  Team: a
     .model({
-      content: a.string(),
+      name: a.string().required(),
+      logoUrl: a.string(),
+
+      // REQUIRED inverse relationships
+      homeMatches: a.hasMany("Match", "homeTeamId"),
+      awayMatches: a.hasMany("Match", "awayTeamId"),
     })
-    .authorization((allow) => [allow.owner()]),
+    .authorization((allow) => [allow.publicApiKey()]),
+
+  Match: a
+    .model({
+      homeTeamId: a.id().required(),
+      awayTeamId: a.id().required(),
+
+      homeTeam: a.belongsTo("Team", "homeTeamId"),
+      awayTeam: a.belongsTo("Team", "awayTeamId"),
+
+      scheduledDate: a.datetime().required(),
+      venue: a.string(),
+      state: a.string(),
+
+      scoreHome: a.integer(),
+      scoreAway: a.integer(),
+    })
+    .authorization((allow) => [allow.publicApiKey()]),
 });
 
 export type Schema = ClientSchema<typeof schema>;

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { signIn, signOut } from "aws-amplify/auth";
 
-function Login() {
+function Login({ onLogin }: { onLogin: () => Promise<void> }) {
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
@@ -31,20 +31,18 @@ function Login() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     setError("");
     setLoading(true);
 
     try {
-
       await signOut();
-
       await signIn({
         username: email,
         password,
       });
+      await onLogin();
 
-      navigate("/Dashboard");
+      navigate("/");
     } catch (error: any) {
       setError(error.message);
     }

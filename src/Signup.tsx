@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { signUp, confirmSignUp } from "aws-amplify/auth";
+import { signUp, confirmSignUp, signIn } from "aws-amplify/auth";
 
-export default function Signup() {
+export default function Signup({ onLogin }: { onLogin: () => Promise<void> }) {
   const [step, setStep] = useState<"signup" | "confirm">("signup");
 
   const navigate = useNavigate();
-  
+
   const [formData, setFormData] = useState({
     firstname: "",
     lastname: "",
@@ -69,7 +69,10 @@ export default function Signup() {
         confirmationCode: code,
       });
 
-      navigate("/login");
+      // Auto sign-in after confirmation so the user lands on Dashboard
+      await signIn({ username: formData.email, password: formData.password });
+      await onLogin();
+      navigate("/");
     } catch (error: any) {
       setMessage(error.message);
     }
