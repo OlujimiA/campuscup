@@ -17,7 +17,7 @@ export function calculateStandings(matches: Match[], teams: Team[], tournament: 
   return standings;
 }
 
-export function checkPlayerEligibility(player: Player, match: Match, rosterLock: boolean): boolean {
+export function checkPlayerEligibility(player: Player, _match: Match, rosterLock: boolean): boolean {
   if (player.isSuspended) return false;
   if (rosterLock && !player.teamId) return false;
   // additional checks (already in another team, etc.)

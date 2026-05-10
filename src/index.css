@@ -1,18 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
-/* Reset & Base */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-html,
-body,
-#root {
+html, body, #root {
   height: 100%;
   background-color: #fdf2f8;
 }
@@ -21,35 +15,14 @@ body {
   font-family: 'Inter', sans-serif;
   background-color: #fdf2f8;
   color: #1a061e;
-  line-height: 1.5;
 }
 
-/* Dark mode root */
-.dark-mode,
-.dark-mode body,
-.dark-mode #root {
+.dark-mode {
   background-color: #000000;
-}
-.dark-mode body {
   color: #ffffff;
 }
-.dark-mode .dark-bg-white {
-  background-color: #111111 !important;
-}
-.dark-mode .dark-text-primary {
-  color: #ffffff !important;
-}
-.dark-mode .dark-text-secondary {
-  color: #9ca3af !important;
-}
-.dark-mode .dark-card-bg {
-  background-color: #1f1f1f !important;
-}
-.dark-mode .dark-input-bg {
-  background-color: #2a2a2a !important;
-}
 
-/* ===== Navbar & common ===== */
+/* Navbar */
 .nav-link {
   color: #fef2f8;
   font-weight: 500;
@@ -59,20 +32,12 @@ body {
   cursor: pointer;
   border: 1px solid transparent;
 }
-.nav-link:hover {
-  color: #f472b6;
-}
+.nav-link:hover { color: #f472b6; }
 .nav-link-active {
   color: #1a061e;
   border: 1px solid #f472b6;
   border-radius: 8px;
   background-color: white;
-}
-.dark-mode .nav-link {
-  color: #9ca3af;
-}
-.dark-mode .nav-link:hover {
-  color: #ffffff;
 }
 .dark-mode .nav-link-active {
   color: #ffffff;
@@ -80,292 +45,66 @@ body {
   background-color: #2a2a4a;
 }
 
-.search-input {
-  background-color: #fce7f3;
+/* Dashboard */
+.dashboard-container {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px;
 }
-.dark-mode .search-input {
-  background-color: #2a2a4a;
-  color: #ffffff;
-}
-
-/* ===== Dashboard (index.html) ===== */
 .score-card {
   background: linear-gradient(to bottom, #fdf2f8, #f5f3ff);
   border-radius: 24px;
-}
-.dark-mode .score-card {
-  background: linear-gradient(to bottom, #111111, #1f1f1f);
+  padding: 24px;
+  margin-bottom: 24px;
 }
 .team-logo-bg {
   background-color: #fce7f3;
   border-radius: 20px;
-}
-.dark-mode .team-logo-bg {
-  background-color: #2a2a4a;
-}
-.match-event-card {
-  background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-}
-.dark-mode .match-event-card {
-  background-color: #1a1a2e;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-}
-.timeline-line {
-  width: 2px;
-  background-color: #fce7f3;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 20px;
-  z-index: 0;
-}
-.dark-mode .timeline-line {
-  background-color: #2a2a4a;
-}
-.timeline-dot {
-  width: 40px;
-  height: 40px;
-  background-color: #be185d;
-  color: white;
-  border-radius: 50%;
+  width: 80px;
+  height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.75rem;
-  font-weight: bold;
-  z-index: 10;
-  position: relative;
 }
-.stat-bar-bg {
-  background-color: #f3f4f6;
-  height: 6px;
-  border-radius: 3px;
-  overflow: hidden;
-}
-.dark-mode .stat-bar-bg {
-  background-color: #2a2a4a;
-}
-.commentary-box {
-  background-color: #1a061e;
+.fixture-card {
+  background: white;
   border-radius: 16px;
-  color: white;
-}
-.dark-mode .commentary-box {
-  background-color: #2a2a4a;
-}
-.page-view {
-  animation: fadeIn 0.3s ease-in-out;
-}
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* ===== Teams page ===== */
-.team-card-v2 {
-  background: white;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-  transition: transform 0.3s ease;
-}
-.team-card-v2:hover {
-  transform: translateY(-5px);
-}
-.dark-mode .team-card-v2 {
-  background: #1a1a2e;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-}
-.team-logo-overlay {
-  width: 50px;
-  height: 50px;
-  border-radius: 12px;
-  background: white;
-  padding: 2px;
-  position: absolute;
-  top: 75px;
-  left: 20px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.dark-mode .team-logo-overlay {
-  background: #2a2a4a;
-}
-.stats-grid-bg {
-  background-color: #fff1f2;
-  border-radius: 12px;
-}
-.dark-mode .stats-grid-bg {
-  background-color: #2a2a4a;
-}
-.rank-badge {
-  font-size: 9px;
-  font-weight: 900;
-  padding: 2px 8px;
-  border-radius: 10px;
-  text-transform: uppercase;
-}
-.rank-green { background-color: #dcfce7; color: #16a34a; }
-.rank-purple { background-color: #f3e8ff; color: #9333ea; }
-.rank-pink { background-color: #fce7f3; color: #db2777; }
-.my-team-tag {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  background-color: #be185d;
-  color: white;
-  font-size: 8px;
-  font-weight: 900;
-  padding: 2px 8px;
-  border-radius: 4px;
-  text-transform: uppercase;
-}
-.filter-btn {
-  font-size: 11px;
-  font-weight: 700;
-  padding: 6px 16px;
-  border-radius: 20px;
-  transition: all 0.2s;
-}
-.filter-btn-active { background-color: #1a061e; color: white; }
-.filter-btn-inactive { background-color: #f3e8ff; color: #9333ea; }
-.dark-mode .filter-btn-active { background-color: #f472b6; color: #1a061e; }
-.dark-mode .filter-btn-inactive { background-color: #2a2a4a; color: #9ca3af; }
-
-/* ===== Admin page ===== */
-.config-card {
-  background-color: white;
-  border-radius: 24px;
-  padding: 32px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.02);
-}
-.dark-mode .config-card {
-  background-color: #1a1a2e;
-}
-.hierarchy-item {
-  background-color: white;
-  border: 1px solid #f3f4f6;
-  border-radius: 12px;
   padding: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.dark-mode .hierarchy-item {
-  background-color: #1a1a2e;
-  border-color: #2a2a4a;
-}
-.simulation-panel {
-  background-color: white;
-  border-radius: 24px;
-  padding: 32px;
-  border-left: 1px solid #f3f4f6;
-}
-.dark-mode .simulation-panel {
-  background-color: #1a1a2e;
-}
-.label-text {
-  font-size: 10px;
-  font-weight: 800;
-  color: #be185d;
-  text-transform: uppercase;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   display: block;
-}
-.input-box {
-  background-color: #fce7f3;
-  border-radius: 8px;
-  padding: 12px 16px;
-  font-weight: 700;
+  text-decoration: none;
   color: #1a061e;
-  border: none;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+.standings-card {
+  background: white;
+  border-radius: 20px;
+  padding: 16px;
+  margin-bottom: 24px;
+}
+.standings-table {
   width: 100%;
+  border-collapse: collapse;
 }
-.dark-mode .input-box {
-  background-color: #2a2a4a;
-  color: #ffffff;
-}
-.number-circle {
-  width: 24px;
-  height: 24px;
-  background-color: #1a061e;
-  color: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 10px;
-  font-weight: 800;
-}
-.preview-badge {
-  background-color: #dcfce7;
-  color: #16a34a;
-  font-size: 9px;
-  font-weight: 900;
-  padding: 2px 8px;
-  border-radius: 10px;
-  text-transform: uppercase;
-}
-
-/* ===== Login / Signup pages ===== */
-.login-card {
-  background-color: #fef2f2;
-  border-top: 4px solid #1a061e;
-}
-.dark-mode .login-card {
-  background-color: #111111;
-  border-top: 4px solid #f472b6;
-}
-.input-field {
-  background-color: #fae8ff;
-}
-.dark-mode .input-field {
-  background-color: #2a2a2a;
-  color: #ffffff;
+.standings-table th, .standings-table td {
+  padding: 8px;
+  text-align: left;
 }
 .btn-primary {
   background-color: #1a061e;
+  color: white;
+  border: none;
+  border-radius: 40px;
+  padding: 12px 24px;
+  font-weight: bold;
+  cursor: pointer;
 }
-.btn-primary:hover {
-  background-color: #2d0a33;
+.input-field {
+  background-color: #fae8ff;
+  border: none;
+  border-radius: 16px;
+  padding: 12px 16px;
+  width: 100%;
+  margin-bottom: 12px;
 }
-
-/* ===== Profile page ===== */
-.profile-card {
-  background-color: white;
-  border-radius: 24px;
-}
-.dark-mode .profile-card {
-  background-color: #1a1a2e;
-}
-.profile-bg-gray {
-  background-color: #f9f9f9;
-}
-.dark-mode .profile-bg-gray {
-  background-color: #2a2a4a;
-}
-.profile-text-primary {
-  color: #1a061e;
-}
-.dark-mode .profile-text-primary {
-  color: #ffffff;
-}
-.profile-text-secondary {
-  color: #6c757d;
-}
-.dark-mode .profile-text-secondary {
-  color: #9ca3af;
-}
-
-/* ===== Mobile menu ===== */
-#mobile-menu {
-  transition: transform 0.3s ease-in-out;
-  transform: translateX(-100%);
-}
-#mobile-menu.active {
-  transform: translateX(0);
-}
+/* Add more classes as needed */

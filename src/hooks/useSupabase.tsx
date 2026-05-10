@@ -6,20 +6,21 @@ export function useSupabaseQuery<T>(table: string, select = '*', filter?: { colu
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<any>(null);
 
+  const fetchData = async () => {
+    setLoading(true);
+    let query = supabase.from(table).select(select);
+    if (filter) {
+      query = query.eq(filter.column, filter.value);
+    }
+    const { data, error } = await query;
+    if (error) setError(error);
+    else setData(data as T[]);
+    setLoading(false);
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      let query = supabase.from(table).select(select);
-      if (filter) {
-        query = query.eq(filter.column, filter.value);
-      }
-      const { data, error } = await query;
-      if (error) setError(error);
-      else setData(data as T[]);
-      setLoading(false);
-    };
     fetchData();
   }, [table, select, filter?.column, filter?.value]);
 
-  return { data, loading, error, refetch: () => fetchData() };
+  return { data, loading, error, refetch: fetchData };
 }

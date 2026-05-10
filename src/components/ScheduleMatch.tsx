@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { supabase } from '../supabaseClient';
+import { useEffect } from 'react';
 
 export default function ScheduleMatch({ onClose, teams }: { onClose: () => void; teams: any[] }) {
   const [homeTeamId, setHomeTeamId] = useState('');

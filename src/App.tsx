@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { supabase } from './supabaseClient';
-import { Session } from '@supabase/supabase-js';
 import Login from './Login';
 import Signup from './Signup';
 import Dashboard from './Dashboard';
@@ -9,9 +8,10 @@ import Teams from './Teams';
 import Standings from './Standings';
 import Profile from './Profile';
 import Admin from './Admin';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
 function App() {
-  const [session, setSession] = useState<Session | null>(null);
+  const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -19,15 +19,13 @@ function App() {
       setSession(session);
       setLoading(false);
     });
-
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
     });
-
     return () => listener?.subscription.unsubscribe();
   }, []);
 
-  if (loading) return <div className="flex items-center justify-center h-screen">Loading...</div>;
+  if (loading) return <div className="dashboard-container">Loading...</div>;
 
   return (
     <BrowserRouter>
