@@ -17,14 +17,12 @@ function Signup() {
     setMessage('');
 
     const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { first_name: firstName, last_name: lastName },
-        // Optional: explicitly set redirectTo if you want a custom confirmation page
-        // emailRedirectTo: 'https://campus-cup.vercel.app/login'
-      }
-    });
+  email,
+  password,
+  options: {
+    data: { first_name: firstName, last_name: lastName }
+  }
+});
 
     if (error) {
       setError(error.message);
